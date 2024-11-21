@@ -199,6 +199,10 @@ button{
     margin-top: 8px;
     margin: 10px;
     margin-left:130px;
+    border:none;
+    border-radius: 3px;
+    padding: 4px;
+    font-weight:3px;
 }
 
 #stats{
