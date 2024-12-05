@@ -1,106 +1,64 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, render_template, request, jsonify
 import os
+from werkzeug.utils import secure_filename
+from models.converted_script import Model, validation_dataset, predict
 import torch
 import cv2
-import numpy as np
 from torchvision import transforms
-from torch import nn
-from torchvision import models
-import face_recognition
+
 
 app = Flask(__name__)
-UPLOAD_FOLDER = "uploads"
+
+# Set up the allowed video file extensions and upload folder
+ALLOWED_EXTENSIONS = {'mp4', 'mov', 'avi', 'mkv'}
+UPLOAD_FOLDER = 'uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
-
-# Load the prediction model
-class Model(nn.Module):
-    def __init__(self, num_classes, latent_dim=2048, lstm_layers=1, hidden_dim=2048, bidirectional=False):
-        super(Model, self).__init__()
-        base_model = models.resnext50_32x4d(pretrained=True)
-        self.model = nn.Sequential(*list(base_model.children())[:-2])
-        self.lstm = nn.LSTM(latent_dim, hidden_dim, lstm_layers, bidirectional)
-        self.linear = nn.Linear(hidden_dim, num_classes)
-
-    def forward(self, x):
-        batch_size, seq_len, c, h, w = x.shape
-        x = x.view(batch_size * seq_len, c, h, w)
-        x = self.model(x)
-        x = x.view(batch_size, seq_len, -1)
-        _, (x, _) = self.lstm(x)
-        x = self.linear(x[-1])
-        return x
-
-model_path = "./model_87_acc_20_frames_final_data.pt"
-model = Model(num_classes=2).cuda()
-model.load_state_dict(torch.load(model_path))
+# Load the model
+model = Model(2).cuda()
+path_to_model = "checkpoint.pt"
+model.load_state_dict(torch.load(path_to_model))
 model.eval()
-
-# Transformations
 im_size = 112
-transform = transforms.Compose([
+mean = [0.485, 0.456, 0.406]
+std = [0.229, 0.224, 0.225]
+train_transforms = transforms.Compose([
     transforms.ToPILImage(),
     transforms.Resize((im_size, im_size)),
     transforms.ToTensor(),
-    transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+    transforms.Normalize(mean, std)
 ])
+# Function to check allowed file extensions
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# Video processing function
-def predict_video(filepath):
-    video = cv2.VideoCapture(filepath)
-    frames = []
-    success, frame = video.read()
-    while success:
-        face_locations = face_recognition.face_locations(frame)
-        if face_locations:
-            top, right, bottom, left = face_locations[0]
-            face_frame = frame[top:bottom, left:right]
-            frames.append(transform(face_frame))
-        success, frame = video.read()
-    
-    video.release()
-    if len(frames) < 1:
-        raise ValueError("No faces detected in the video.")
-    
-    frames = torch.stack(frames[:20]).unsqueeze(0).cuda()  # Use the first 20 frames
-    with torch.no_grad():
-        logits = model(frames)
-        probabilities = torch.softmax(logits, dim=1)
-        prediction = torch.argmax(probabilities, dim=1).item()
-        confidence = probabilities[0][prediction].item() * 100
-        return "REAL" if prediction == 1 else "FAKE", confidence
+# Route for the home page
+@app.route('/')
+def index():
+    return render_template('index.html')
 
-# Flask Routes
-@app.route("/")
-def home():
-    return render_template("home.html")
-
-@app.route("/upload_video", methods=["POST"])
+# Route to handle video upload and prediction
+@app.route('/upload_video', methods=['POST'])
 def upload_video():
-    file = request.files.get("video")
-    if not file:
-        return jsonify({"error": "No video file provided"}), 400
+    if 'video' not in request.files:
+        return jsonify({'error': 'No file part'}), 400
+    file = request.files['video']
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(file_path)
 
-    filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-    file.save(filepath)
-    return jsonify({"message": "Video uploaded successfully", "file_path": filepath})
+        # Process the video and make prediction
+        video_dataset = validation_dataset([file_path], sequence_length=20, transform=train_transforms)
+        prediction = predict(model, video_dataset[0])
 
-@app.route("/predict", methods=["POST"])
-def predict():
-    file = request.files.get("file")
-    if not file:
-        return jsonify({"error": "No video file provided"}), 400
+        # Return prediction result
+        result = 'Real' if prediction[0] == 1 else 'Fake'
+        return jsonify({'prediction': result, 'confidence': prediction[1]}), 200
+    else:
+        return jsonify({'error': 'Invalid file type'}), 400
 
-    filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-    file.save(filepath)
-
-    try:
-        prediction, confidence = predict_video(filepath)
-        return jsonify({"prediction": prediction, "confidence": confidence})
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     app.run(debug=True)
