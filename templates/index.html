@@ -6,299 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Deepfake Detection</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <!-- <link rel="stylesheet" href="style.css"> -->
-     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
- 
- * {
-     margin: 0;
-     padding: 0;
-     box-sizing: border-box;
-     font-family: 'Poppins', sans-serif;
- }
-  
- body {
-     width: 100%;
-     display: flex;
-     justify-content: center;
-     padding: 40px 10px;
-     color:#333;
-     background-image: url("https://image.cnbcfm.com/api/v1/image/107168311-1671463394870-gettyimages-1428262683-gesicht_009.jpeg?v=1715150179&w=1480&h=833&ffmt=webp&vtcrop=y");
-     background-repeat: repeat-y;
-     background-attachment: scroll;
-     background-size: 100%;
+    <link rel="stylesheet" href="../static/stylesheets/style.css">
      
- }
- 
- .navigation {
-     position: relative;
-     width: 100%;
-     height: 70px;
-     background:  linear-gradient(155deg,#192b6e, #a6307c);
-     display: flex;
-     justify-content: center;
-     align-items: center;
-     border-radius: 10px;
- }
-  
- .navigation ul {
-     display: flex;
-     gap: 50px;
-     width: 500px;
- }
-  
- .navigation ul li {
-     position: relative;
-     width: 70px;
-     height: 70px;
-     list-style: none;
-     z-index: 1;
- }
-  
- .navigation ul li a {
-     position: relative;
-     display: flex;
-     justify-content: center;
-     align-items: center;
-     flex-direction: column;
-     width: 100%;
-     text-align: center;
-     font-weight: 500;
- }
-   
- .navigation ul li a .icon {
-     position: relative;
-     display: block;
-     line-height: 75px;
-     font-size: 1.5em;
-     text-align: center;
-     color: #fff;
-     transition: .5s;
- }
-  
- .navigation ul li.active a .icon {
-     transform: translateY(-32px);
- }
-  
- .navigation ul li a .text {
-     position: absolute;
-     color: #fff;
-     font-weight: 400;
-     font-size: 1em;
-     letter-spacing: .05em;
-     opacity: 0;
-     transform: translateY(20px);
-     transition: .5s;
- }
-  
- .navigation ul li.active a .text {
-     opacity: 1;
-     transform: translateY(10px);
- }
-  
- .navigation ul li a .circle {
-     position: absolute;
-     display: block;
-     width: 50px;
-     height: 50px;
-     background: transparent;
-     border-radius: 50%;
-     border: 1.8px solid #fff;
-     transform: translateY(-37px) scale(0);
- }
-  
- .navigation ul li.active a .circle {
-     transition: .5s;
-     transition-delay: .5s;
-     transform: translateY(-37px) scale(1);
- }
-  
- .indicator {
-     position: absolute;
-     top: -50%;
-     width: 70px;
-     height: 70px;
-     background: linear-gradient(0deg, #ffa576,#0951eb);
-     border: 6px solid white;
-     border-radius: 50%;
-     display: flex;
-     justify-content: center;
-     align-items: center;
-     transition: .5s;
- }
-  
- .indicator::before {
-     content: '';
-     position: absolute;
-     top: 50%;
-     left: -22px;
-     width: 20px;
-     height: 20px;
-     background: transparent;
-     border-top-right-radius: 20px;
-     box-shadow: 1px -10px 0 white;
- }
-  
- .indicator::after {
-     content: '';
-     position: absolute;
-     top: 50%;
-     right: -22px;
-     width: 20px;
-     height: 20px;
-     background: transparent;
-     border-top-left-radius: 20px;
-     box-shadow: -1px -10px 0 white;
- }
-  
- .navigation ul li:nth-child(1).active~.indicator {
-     transform: translateX(calc(-5px * 1));
- }
-  
- .navigation ul li:nth-child(2).active~.indicator {
-     transform: translateX(calc(105px * 1));
- }
-  
- .navigation ul li:nth-child(3).active~.indicator {
-     transform: translateX(calc(107.5px * 2));
- }
-  
- .navigation ul li:nth-child(4).active~.indicator {
-     transform: translateX(calc(108.5px * 3));
- }
-  
- .navigation ul li:nth-child(5).active~.indicator {
-     transform: translateX(calc(108.5px * 4));
- }
- 
- .content{
-     position: absolute;
-     padding: 90px 20px;
- }
- 
- h1{
-     text-transform: uppercase;
-     font-weight: 150;
- }
- 
- .videos{
-     position: absolute;
-     margin-top: 650px;
- }
- 
- .vid{
-     color: black;
-     padding: 120px 200px;
-     align-items: center;
-     justify-content: center;
-     background-color: rgba(0, 0, 0, 0.192);
-     border: dotted #9db8f1;
-     border-radius: 30px;
-     margin-bottom: 50px;
- }
- 
- .vid h2{
-     padding-left: 50px;
-     padding-bottom: 8px;
- }
- 
- #videoInput{
-     margin-left: 60px;
- }
- 
- button{
-     margin-top: 8px;
-     margin: 10px;
-     margin-left:130px;
-     border:none;
-     border-radius: 3px;
-     padding: 4px;
-     font-weight:3px;
- }
- 
- #stats{
-     position: absolute;
-     margin-top: 1100px;
-     padding: 20px;
- }
- 
- #stats h2{
-     text-align: center;
- }
- 
- #faq {
-     margin-top: 1400px; 
-     background-color: transparent;
-     padding: 50px 20px;
-     border-radius: 15px;
-     position: absolute;
-     max-width: 800px;
- }
- 
- .faq-container {
-     max-width: 800px;
-     margin: 0 auto;
-     text-align: center;
- }
- 
- .faq-container h2 {
-     font-size: 2rem;
-     color: #333;
-     margin-bottom: 30px;
-     text-transform: uppercase;
-     font-weight: 600;
- }
- 
- .faq {
-     background: #fff;
-     margin-bottom: 20px;
-     border-radius: 8px;
-     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-     overflow: hidden;
-     border: 1px solid #ddd;
-     text-align: left;
- }
- 
- .faq .question {
-     padding: 15px 20px;
-     font-size: 1.2rem;
-     font-weight: bold;
-     color: #333;
-     cursor: pointer;
-     display: flex;
-     justify-content: space-between;
-     align-items: center;
-     background-color: #f1f1f1;
-     transition: background 0.3s;
- }
- 
- .faq .question:hover {
-     background-color: #e2e8f0;
- }
- 
- .faq .answer {
-     padding: 15px 20px;
-     font-size: 1rem;
-     color: #555;
-     line-height: 1.6;
-     display: none;
-     background-color: #fff;
- }
- 
- .faq .icon {
-     font-size: 1.5rem;
-     color: #555;
-     transition: transform 0.3s;
- }
- 
- .faq.active .icon {
-     transform: rotate(45deg);
- }
- 
- .faq.active .answer {
-     display: block;
- }
-     </style>
 </head>
 <body>
     <div class="navigation">
@@ -353,7 +62,7 @@
     </div>
     <div class="content">
         <h1>Deepfake Detection using Deep Learning</h1>
-        <p>Deepfake technology has revolutionized the digital landscape, enabling creative applications while also raising serious ethical and security concerns. By leveraging artificial intelligence, deepfakes can seamlessly swap faces in videos, often making it difficult to distinguish between real and manipulated content. This poses significant risks to privacy, media integrity, cybersecurity, and personal reputations. Our project, a Face-Swap Based Deepfake Detection System, tackles this challenge using cutting-edge deep learning techniques. The system analyzes videos frame-by-frame, identifying subtle inconsistencies introduced during face-swapping processes. Leveraging advanced facial recognition and a custom-trained neural network, our solution employs a ResNeXt-50 architecture for extracting spatial features, combined with LSTM layers to capture temporal dependencies across video frames. The result is a highly accurate prediction model that can classify videos as REAL or FAKE, along with a confidence score. Designed to process complex and varying scenarios, the platform ensures robust detection even in challenging conditions such as poor lighting or non-ideal angles. This project empowers individuals, organizations, and platforms to combat the misuse of deepfake technology, safeguarding trust in digital content. Our mission is to restore integrity and security to the digital ecosystem by providing a reliable and scalable solution for detecting manipulated videos. With its blend of innovation, precision, and social responsibility, this system stands at the forefront of deepfake detection technology, contributing to a safer and more trustworthy online environment.</p>
+        <!-- <p>Deepfake technology has revolutionized the digital landscape, enabling creative applications while also raising serious ethical and security concerns. By leveraging artificial intelligence, deepfakes can seamlessly swap faces in videos, often making it difficult to distinguish between real and manipulated content. This poses significant risks to privacy, media integrity, cybersecurity, and personal reputations. Our project tackles this challenge using cutting-edge deep learning techniques. The system analyzes videos frame-by-frame, identifying subtle inconsistencies introduced during face-swapping processes. This solution employs a ResNeXt-50 architecture for extracting spatial features, combined with LSTM layers to capture temporal dependencies across video frames. The result is a highly accurate prediction model that can classify videos as real or fake, along with a confidence score. Designed to process complex and varying scenarios, the platform ensures robust detection even in challenging conditions such as poor lighting or non-ideal angles. Our mission is to restore integrity and security to the digital ecosystem by providing a reliable and scalable solution for detecting manipulated videos. With its blend of innovation, precision, and social responsibility, this system stands at the forefront of deepfake detection technology, contributing to a safer and more trustworthy online environment.</p> -->
     </div>
     <div class="videos" id="videos">
         <form id="uploadForm" enctype="multipart/form-data">
@@ -364,6 +73,9 @@
             </div>
         </form>
         <div id="uploadStatus"></div>
+        <video id="videoPlayer" width="300" preload="auto" controls>
+            Your browser does not support the video tag.
+        </video>
         <div id="predictionResult" style="display: none;">
             <h3>Prediction: <span id="result"></span></h3>
             <h4>Confidence: <span id="confidence"></span>%</h4>
@@ -396,106 +108,109 @@
             </div>
         </div>
     </div>
-    <script src="scripts.js"></script>
+    <script src="../static/scripts/scripts.js"></script>
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
     <script>
-        const uploadForm = document.getElementById('uploadForm');
-        const videoInput = document.getElementById('videoInput');
-        const uploadStatus = document.getElementById('uploadStatus');
-        const predictionResult = document.getElementById('predictionResult');
-        const resultText = document.getElementById('result');
-        const confidenceText = document.getElementById('confidence');
+const uploadForm = document.getElementById('uploadForm');
+const videoInput = document.getElementById('videoInput');
+const uploadStatus = document.getElementById('uploadStatus');
+const predictionResult = document.getElementById('predictionResult');
+const resultText = document.getElementById('result');
+const confidenceText = document.getElementById('confidence');
+const videoPlayer = document.getElementById('videoPlayer');
+const statsSection = document.getElementById('stats'); // Target the #stats section
+const faqSection = document.getElementById('faq'); // Target the #faq section
 
-        uploadForm.addEventListener('submit', function (e) {
-            e.preventDefault();
+videoInput.addEventListener('change', function(event) {
+    const file = event.target.files[0]; // Get the selected file
 
-            const formData = new FormData();
-            formData.append('video', videoInput.files[0]);
+    if (file && file.type.startsWith('video/')) {
+        // Create a URL for the selected file
+        const videoURL = URL.createObjectURL(file);
 
-            uploadStatus.innerHTML = "Uploading...";
+        // Set the video source to the uploaded file URL
+        videoPlayer.src = videoURL;
+        videoPlayer.style.display = 'block';
 
-            // Make AJAX request to Flask
-            fetch('/upload_video', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                uploadStatus.innerHTML = "";  // Clear upload status
+        // Move both the #stats and #faq sections down based on the video height
+        setTimeout(() => {
+            const videoHeight = videoPlayer.offsetHeight;
 
-                if (data.error) {
-                    uploadStatus.innerHTML = `Error: ${data.error}`;
-                } else {
-                    // Show prediction result
-                    resultText.innerText = data.prediction;
-                    confidenceText.innerText = data.confidence.toFixed(2);
-                    predictionResult.style.display = 'block';
-                }
-            })
-            .catch(error => {
-                uploadStatus.innerHTML = `Error: ${error.message}`;
-            });
-        });
-    </script>
-    <script>
-        document.getElementById("uploadForm").addEventListener("submit", async function (e) {
+            // Adjust margin-top for both stats and faq sections
+            statsSection.style.marginTop = (videoHeight + 600) + 'px'; // Move stats down
+            faqSection.style.marginTop = (videoHeight + 800) + 'px'; // Move FAQ down
+        }, 100); // Delay to ensure video is fully loaded
+    } else {
+        alert('Please upload a valid video file.');
+    }
+});
+
+uploadForm.addEventListener('submit', function (e) {
     e.preventDefault();
 
-    const videoInput = document.getElementById("videoInput");
-    const file = videoInput.files[0];
+    const formData = new FormData();
+    formData.append('video', videoInput.files[0]);
 
-    if (!file) {
-        alert("Please select a video file to upload.");
-        return;
-    }
+    uploadStatus.innerHTML = "Uploading...";
+
+    // Make AJAX request to Flask
+    fetch('/upload_video', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        uploadStatus.innerHTML = "";  // Clear upload status
+
+        if (data.error) {
+            uploadStatus.innerHTML = `Error: ${data.error}`;
+        } else {
+            // Show prediction result
+            resultText.innerText = data.prediction;
+            confidenceText.innerText = data.confidence.toFixed(2);
+            predictionResult.style.display = 'block';
+            uploadForm.addEventListener('submit', function (e) {
+    e.preventDefault();
 
     const formData = new FormData();
-    formData.append("video", file);
+    formData.append('video', videoInput.files[0]);
 
-    try {
-        const response = await fetch("/upload_video", {
-            method: "POST",
-            body: formData,
-        });
+    uploadStatus.innerHTML = "Uploading...";
 
-        const statusDiv = document.getElementById("uploadStatus");
-        if (response.ok) {
-            const result = await response.json();
-            statusDiv.innerHTML = `<p style="color: green;">${result.message}</p>`;
+    // Make AJAX request to Flask
+    fetch('/upload_video', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        uploadStatus.innerHTML = "";  // Clear upload status
+
+        if (data.error) {
+            uploadStatus.innerHTML = `Error: ${data.error}`;
         } else {
-            statusDiv.innerHTML = `<p style="color: red;">Error: ${response.statusText}</p>`;
+            // Show prediction result
+            resultText.innerText = data.prediction;
+            confidenceText.innerText = data.confidence.toFixed(2);
+            predictionResult.style.display = 'block';
+
+            // Change the result text color based on prediction
+            if (data.prediction.toLowerCase() === 'real') {
+                resultText.style.color = 'green'; // Green if the video is real
+            } else if (data.prediction.toLowerCase() === 'fake') {
+                resultText.style.color = 'red'; // Red if the video is fake
+            }
         }
-    } catch (error) {
-        alert("An error occurred while uploading the video. Please try again.");
-        console.error(error);
-    }
+    })
+    .catch(error => {
+        uploadStatus.innerHTML = `Error: ${error.message}`;
+    });
 });
-
-document.getElementById("videoInput").addEventListener("change", function () {
-    const allowedTypes = ["video/mp4", "video/webm", "video/ogg"];
-    const maxFileSizeMB = 100;
-    const file = this.files[0];
-
-    if (file) {
-        if (!allowedTypes.includes(file.type)) {
-            alert("Invalid file type. Please upload a video file (MP4, WEBM, or OGG).");
-            this.value = ""; 
-            return;
         }
-
-        const fileSizeMB = file.size / (1024 * 1024);
-        if (fileSizeMB > maxFileSizeMB) {
-            alert(`File size exceeds ${maxFileSizeMB} MB. Please upload a smaller file.`);
-            this.value = ""; 
-        }
-    }
-});
-
-document.querySelectorAll('.faq .question').forEach((question) => {
-    question.addEventListener('click', () => {
-        const faq = question.parentElement;
-        faq.classList.toggle('active');
+    })
+    .catch(error => {
+        uploadStatus.innerHTML = `Error: ${error.message}`;
     });
 });
     </script>
